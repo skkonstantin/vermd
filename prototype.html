@@ -1,0 +1,1445 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Электронная регистратура</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/solid.css"
+        integrity="sha384-r/k8YTFqmlOaqRkZuSiE9trsrDXkh07mRaoGBMoDcmA58OHILZPsk29i2BsFng1B" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/fontawesome.css"
+        integrity="sha384-4aon80D8rXCGx9ayDt85LbyUHeMWd3UiBaWliBlJ53yzm9hqN21A+o1pqoyK04h+" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+    <style>
+        .modal-mask {
+            position: fixed;
+            z-index: 9998;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, .75);
+            display: table;
+            transition: opacity .3s ease;
+        }
+
+        .modal-wrapper {
+            display: table-cell;
+            vertical-align: middle;
+        }
+
+        .modal-container {
+            width: 39.6875rem;
+            height: 29.1875rem;
+            margin: 0px auto;
+            /* padding: 20px 30px; */
+            background-color: #FCFCFE;
+            border-radius: 5px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 1);
+            transition: all .3s ease;
+        }
+        .modal-header {
+            background-color: #fff;
+            border-bottom: 2px solid #1B6CF3;
+        }
+
+        .modal-body {
+            padding: 1.875rem;
+        }
+
+        .modal-default-button {
+            padding: 0;
+            float: right;
+        }
+
+        .modal-enter {
+            opacity: 0;
+        }
+
+        .modal-leave-active {
+            opacity: 0;
+        }
+
+        .modal-enter .modal-container,
+        .modal-leave-active .modal-container {
+            -webkit-transform: scale(1.1);
+            transform: scale(1.1);
+        }
+        
+        .app{
+            background-color: #fcfcfe;
+        }
+        
+        .app-header {
+            background-color: #fff;
+            box-shadow: 0px 3px 10px 0px rgba(0, 0, 0, 0.05);
+        }
+
+        .app-footer {
+            box-shadow: 0px -3px 10px 0px rgba(0, 0, 0, 0.05);
+            background-color: #E9F4F4;
+        }
+
+        html,
+        body {
+            height: 100%;
+            font-family: 'Roboto', sans-serif;
+            color: #373A3C;
+        }
+
+        .menu-item{
+            height: 8.75rem;
+            width: 21.875rem;
+            box-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.05);
+            border: 2px solid #F1F1F5;
+            cursor: pointer;
+        }
+
+        .menu-item:hover{
+            border-color: #1B6CF3;
+        }
+
+        .step-item{
+            width: 15.9375rem;
+            height: 3.125rem;
+            background-color: #F1F1F5;
+            color: #8E959B;
+            padding-left: 0.15rem; /* 0.1 ?*/
+        }
+
+        .step-item.active, .step-item.passed{
+            color: #FFF;
+            background-color: #1B6CF3;
+            cursor: pointer;
+        }
+
+        .step-item.active{
+            box-shadow: 0px 5px 15px 0px rgba(27, 18, 243, 0.25);
+        }
+
+        .active .step-item-number{
+            color: #1B6CF3;
+            font-weight: 700;
+        }
+
+        .step-item-number{
+            font-size: 1.125rem;
+            background-color: #fff;
+            padding: 0.75rem;
+        }
+
+        .step-item-title{
+            font-size: 1rem;
+        }
+
+        .step-line{
+            height: 3px; flex: 1; background: #F1F1F5;
+        }
+
+        .date-item{
+            border: 2px solid #F1F1F5;
+            cursor: pointer;
+        }
+
+        .date-item.active{
+            border-color: #1B6CF3;
+        }
+
+        .date-item-icon{
+            color: #8E959B;
+        }
+
+        .active .date-item-icon{
+            color: #1B6CF3;
+        }
+
+        .spec-item{
+            width: 21.875rem;
+            height: 5rem;
+            cursor: pointer;
+            box-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.05);
+            border: 2px solid #F1F1F5;
+        }
+
+        .spec-item.active{
+            border-color: #1B6CF3;
+        }
+
+        .item-check-circle{
+            font-size: 1.375rem;
+            color: #1B6CF3;
+            margin-left: -0.75rem;
+            visibility: hidden;
+            background-color: #fff;
+        }
+
+        .active .item-check-circle{
+            visibility: visible;
+        }
+
+        .spec-item-ticket{
+            background-color: #1B6CF3;
+            border-top-right-radius: .25rem;
+            border-bottom-right-radius: .25rem;
+            text-align: center;
+            color: #fff;
+        }
+
+        .active .spec-item-ticket{
+            border-radius: 0;
+        }
+
+        .doctor-item{
+            height: 6.5625rem;
+            box-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.05);
+            border: 2px solid #F1F1F5;
+        }
+
+        .doctor-item.active{
+            border-color: #1B6CF3;
+            box-shadow: 0px 5px 15px 0px rgba(27, 18, 243, 0.25);
+        }
+
+        .doctor-day-item{
+            border-right: 2px solid #F1F1F5;
+            border-left: 2px solid #F1F1F5;
+            cursor: pointer;
+            width: 7.875rem;
+        }
+
+        .doctor-day-item.active{
+            border-color: #1B6CF3;
+        }
+
+        .day-item{
+            width: 7.875rem;
+            font-size: 1.25rem;
+        }
+
+        .active-inline-list-item{
+            display: inline-block;
+        }
+        .active-inline-list-item::before {
+            content: "● ";
+            color: #1B6CF3;
+        }
+
+        .form-control{
+            box-shadow: 0px 2px 5px 0px rgba(0, 0, 0, 0.05);
+            border: 2px solid #F1F1F5;
+        }
+
+        .form-control::placeholder{
+            color: #8E959B;
+        }
+
+        .form-control:focus{
+            border-color: #1B6CF3;
+        }
+
+        .btn-light{
+            font-size: 1.125rem;
+            border: 2px solid #F1F1F5;
+            box-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.05);
+            background-color: #fff;
+            color:#373A3C;
+        }
+
+        .btn-light:hover, .btn-secondary:hover{
+            border-color: #1B6CF3;
+            background-color: #1B6CF3;
+            color: #fff;
+            box-shadow: 0px 5px 10px 0px rgba(27, 18, 243, 0.25);
+            box-shadow: #1B6CF3
+        }
+
+        .btn-secondary{
+            border: 2px solid #F1F1F5;
+            background-color: #F1F1F5;
+            color: #373A3C;
+        }
+
+        .tooltip > .tooltip-inner { background-color: #fff; color: #8E959B;}
+        .tooltip-inner {
+            color: #8E959B;
+            background-color: #fff;
+            border: 2px solid #F1F1F5;
+            box-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.05);
+        }
+        .tooltip.bs-tooltip-auto[x-placement^=top] .arrow::before, .tooltip.bs-tooltip-top .arrow::before {
+            border-top-color: #fff;
+            box-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.05);
+        }
+
+        .tooltip.show {
+            opacity: 1;
+        } 
+
+    </style>
+  </head>
+  
+  <body>
+    <div id="app" class="app d-flex mx-auto flex-column">
+        <header class="app-header">
+            <div class="container d-flex justify-content-between align-items-center" style="height: 6.25rem;">
+                <img style="height: 2.875rem;" src="http://msd170.ru/assets/templates/msd170/images/logo.png" />
+                <div class="">
+                    <div class="border-bottom" style="color: #D46660;">
+                        <span>Отменить запись:</span>
+                        <span class="float-right ml-3">8 (495) 516-54-88</span>
+                    </div>
+                    <div class="">
+                        <span>Записаться на прием:</span>
+                        <span class="float-right ml-3">8 (495) 516-54-88</span>
+                    </div>
+                </div>
+                <div class="">
+                    <div class="border-bottom"><span>Единая справочная:</span><span class="float-right ml-3">8 (495) 516-54-88</span></div>
+                    <div class=""><span>Экстренный вызов скорой:</span><span class="float-right ml-3">8 (495) 516-54-88</span>
+                    </div>
+                </div>
+                <div class="border px-3 py-1 text-center rounded">
+                    <div class="border-bottom" style="font-size: 1.125rem;">{{ getTime }}</div>
+                    <div class="">{{ getDate }}</div>
+                </div>
+            </div>
+        </header>
+        <main class="container" role="main">
+            <div v-if="state === 'menu'">
+                <h3 class="text-center my-5">ЭЛЕКТРОННАЯ РЕГИСТРАТУРА<br/>ФГБУЗ МСЧ№170 ФМБА России</h3>
+                <div class="d-flex flex-wrap justify-content-between">
+                    <div v-for="item in menuItems" :key="item.id" @click="item.id === 1 ? showLogin = true : showModal = true" class="menu-item bg-white p-3 mb-4 rounded d-flex flex-column">
+                        <span v-bind:class="'fas fa-' + item.icon + ' ml-auto'" style="font-size: 2.5em; color: #1B6CF3;"></span>
+                        <strong style="align-self: flex-start; font-size: 1.3rem;" v-html="item.title"></strong>
+                    </div>
+                </div>
+            </div>
+            <div v-if="state.indexOf('step') !== -1" class="step-header">
+                <div class="d-flex align-items-center py-3" style="font-size: 1.125rem; border-bottom: 2px solid #F1F1F5;">
+                    <span class="fas fa-stethoscope mr-2"></span>
+                    <span>Ваш терапевт: Петрова И.С.</span>
+                    <button @click="gotoMenu" class="btn btn-light ml-2">Записаться</button>
+                    <span class="fas fa-user mr-2 ml-auto"></span>
+                    <span>Иванов С.В. (1968 г.)</span>
+                    <button @click="gotoMenu" class="btn btn-light ml-2">Выйти<span class="fas fa-sign-out-alt ml-2"></span></button>
+                </div>
+                <h3 class="text-center my-4">ЗАПИСЬ К ВРАЧУ</h3>
+                <div class="d-flex align-items-center">
+                    <template v-for="(step, index) in steps">
+                        <div :key="step.id"
+                            :class="'step-item' + (state === ('step' + step.id.toString()) ? ' active' : '') + ((parseInt(state.charAt(4)) > step.id) ? ' passed' : '') + ' btn btn-lg rounded-pill text-left'"
+                            @click="stepClicked(step.id)"
+                            :style="((parseInt(state.charAt(4)) > step.id) ? 'padding-left: 0.5rem;' : '')">
+                            <span class="fas fa-check-circle" v-if="(parseInt(state.charAt(4)) > step.id)" style="font-size: 2rem;"></span>
+                            <span class="step-item-number rounded-pill" v-else >{{ step.number }}</span>
+                            <span class="step-item-title" :style="(parseInt(state.charAt(4)) > step.id) ? 'vertical-align: super;' : ''">{{step.title}}</span>
+                        </div>
+                        <div v-if="index !== steps.length - 1" class="step-line" :style="((parseInt(state.charAt(4)) > step.id) ? 'background-color: #1B6CF3;' : '')"></div>
+                    </template>
+                </div>
+            </div>
+            <div v-if="state === 'step1'">
+                <input class="form-control form-control-lg w-100 rounded my-4" placeholder="ПОИСК ПО ФИО ВРАЧА ИЛИ СПЕЦИАЛЬНОСТИ"
+                    style="border: 2px solid #1B6CF3; box-shadow: 0px 2px 10px 0px rgba(27, 18, 243, 0.15);"
+                    v-model="search" />
+                <div class="d-flex align-items-center">
+                    <strong style="font-size: 1.25rem;">Свободные талоны на даты</strong>
+                    <div v-for="date in freeDates"
+                        :key="date.id"
+                        class="date-item btn btn-lg bg-white ml-3"
+                        @click="activeDateId = date.id"
+                        v-bind:class="{ active: activeDateId === date.id }">
+                        <span class="date-item-icon fas fa-calendar-alt mr-2"></span>
+                        <span style="font-size: 1.125rem;">{{date.title}}</span>
+                    </div>
+                </div>
+                <div class="d-flex mt-4 align-items-center" style="height: 3.125rem;">
+                    <span>Выберите специальность</span>
+                    <div class="ml-5">{{ activeSpec.length }} из {{ 3 }}:</div>
+                    <template v-if="activeSpec.length > 0">
+                        <ul class="m-0 p-0">
+                            <li v-for="spec in activeSpec"
+                                :key="spec.id"
+                                class="active-inline-list-item ml-3">{{spec.title}}</li>
+                        </ul>
+                        <button @click="gotoStep(2)"
+                            type="button" class="btn btn-primary btn-lg rounded-pill ml-3 d-flex align-items-center ml-auto" style="min-width:15.9375rem;">
+                            Продолжить
+                            <span class="fas fa-arrow-right ml-auto" style="font-size: 1.625rem;"></span>
+                        </button>
+                    </template>
+                </div>
+                <div class="d-flex flex-wrap justify-content-between mt-4">
+                    <div v-for="spec in specs"
+                        v-if="specValid(spec)"
+                        :key="spec.id"
+                        @click="specChanged(spec)"
+                        class="spec-item bg-white mb-4 rounded d-flex align-items-center"
+                        v-bind:class="{ active: activeSpec.includes(spec) }">
+                        <span class="item-check-circle fas fa-check-circle"></span>
+                        <div class="p-1" style="font-size: 1.25rem;">
+                            <strong>{{ spec.title }}</strong>
+                            <div class="d-flex align-items-center">
+                                <span class="fas fa-clock mr-2"></span><div style="font-size: 1.375rem;">{{ spec.time }}</div>
+                            </div>
+                        </div>
+                        <div class="spec-item-ticket p-1 ml-auto" :style="(spec.count === 0 ? 'color: #8E959B; background-color: #F1F1F5;' : '')">
+                            <strong style="font-size: 1.875rem;">{{ spec.count }}</strong>
+                            <div style="font-size: 1.125rem;"><span class="fas fa-receipt mr-2" style="opacity: 0.7;"></span>талонов</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div v-if="state === 'step2'">
+                <div class="d-flex mt-4 align-items-center" style="height: 3.125rem;">
+                    <span>Выберите врача</span>
+                    <div class="ml-5">{{ activeTickets.length }} из {{ activeSpec.length }}:</div>
+                    <template v-if="activeTickets.length > 0">
+                        <ul class="m-0 p-0">
+                            <li v-for="ticket in activeTickets" :key="ticket.docid" class="active-inline-list-item ml-3">{{ ticket.title }}</li>
+                        </ul>
+                        <button @click="gotoStep(3)" type="button"
+                            class="btn btn-primary btn-lg rounded-pill ml-3 d-flex align-items-center ml-auto" style="min-width:15.9375rem;">
+                            Продолжить
+                            <span class="fas fa-arrow-right ml-auto" style="font-size: 1.625rem;"></span>
+                        </button>
+                    </template>
+                </div>
+                <div v-for="(spec, index) in activeSpec"
+                    :key="spec.id + 666"
+                    :class="'mt-' + (index === 0 ? '4' : '5') + (index === activeSpec.length - 1 ? ' mb-5' : '')">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="d-flex flex-column">
+                            <strong style="font-size: 1.25rem;">{{ spec.title }}</strong>
+                            <button @click="gotoStep(1)" type="button" class="rounded-pill btn btn-secondary">Изменить специальность</button>
+                        </div>
+                        <button type="button" class="btn btn-sm btn-primary ml-auto "><span class="fas fa-chevron-left"
+                                style="font-size: 1.125rem;"></span></button>
+                        <div class="d-flex text-center">
+                            <div v-for="day in days"
+                                :key="day.id" v-html="formatDate(day.date)"
+                                class="day-item">
+                            </div>
+                        </div>
+                        <button type="button" class="btn btn-sm btn-primary" style="margin-right: -1.8rem;"><span class="fas fa-chevron-right"
+                                style="font-size: 1.125rem;"></span></button>
+                    </div>
+                    <div v-for="doctor in doctors" :key="doctor.id + spec.id" class="doctor-item bg-white mb-3 rounded d-flex align-items-center"
+                        v-bind:class="{ active: isDoctorActive(doctor.id) }"
+                        v-if="validDoctor(doctor, index)">
+                        <span class="item-check-circle fas fa-check-circle"></span>
+                        <div class="d-flex align-items-center h-100 pl-2">
+                            <img :src="doctor.avatar" class="rounded-circle"
+                                style="width: 4.6875rem; height: 4.6875rem; border: 2px solid #F1F1F5;" />
+                            <div class="d-flex flex-column ml-3" style="line-height: 1.15rem;">
+                                <strong style="font-size: 1.125rem;">{{ doctor.lastname }}</strong>
+                                <span style="font-size: 0.875rem;">{{ getDoctorIO(doctor) }}</span>
+                                <div class="mt-2" style="color: #8E959B; font-size: 0.875rem;" data-toggle="tooltip" data-placement="top" :title="doctor.qualify">Квалификация <span
+                                        class="fas fa-info-circle ml-1" style="font-size: 0.9375rem;"></span></div>
+                            </div>
+                        </div>
+                        <div class="ml-auto d-flex h-100">
+                            <div v-for="ticket in doctor.tickets" :key="ticket.id" @click="docChanged(doctor, ticket, spec)"
+                                v-bind:class="{ active: isTicketActive(doctor.id, ticket.id) }"
+                                class="doctor-day-item text-center d-flex flex-column align-items-center justify-content-center"
+                                :style="'background-color: #' + getStateBackgroundColor(ticket) + ';'">
+                                <template v-if="ticket.state === 0 || ticket.state === 1">
+                                    <div class="my-auto" style="font-size: 1.125rem;">{{ ticket.time }}</div>
+                                    <div class="border-top py-1"
+                                        :style="'line-height: 1.25rem; ' + (ticket.state === 1 ? 'color:#8E959B;' : '')">
+                                        <span v-if="ticket.state === 0" class="fas fa-receipt mr-2" style="color: #1B6CF3;"></span><span
+                                            style="font-size: 1.25rem;">{{ ticket.count }}</span><br />
+                                        <span>талонов</span>
+                                    </div>
+                                </template>
+                                <div v-else class="">
+                                    <div v-html="getTicketMsg(ticket.state)" style="font-size: 1.125rem; color:#8E959B;" class=""></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div v-if="state === 'step3'" class="mt-5">
+                <div class="alert alert-primary">В разработке</div>
+            </div>
+            <div v-if="state === 'step4'" class="mt-5">
+                <div class="alert alert-primary">В разработке</div>
+            </div>
+        </main>
+        <footer class="app-footer mt-auto">
+            <div class="container d-flex justify-content-between align-items-center" style="height: 12rem;">
+                <img style="height: 4.5rem;" src="http://msd170.ru/assets/templates/msd170/images/logo.png" />
+                <div class="">
+                    <h6 style="color: #DA7C77;"><span class="fas fa-map-marker-alt mr-2"></span>ГДЕ МЫ НАХОДИМСЯ</h6>
+                    <div style="font-size: 0.875rem;">141070, МО,<br />г. Королёв, ул. Ленина, д. 2<br /><a href="#" style="color: #023399;text-decoration: underline;">Схема проезда</a></div>
+                </div>
+                <div class="">
+                    <h6 style="color: #DA7C77;"><span class="fas fa-clock mr-2"></span>КАК МЫ РАБОТАЕМ</h6>
+                    <div style="font-size: 0.875rem;">Пн-Пт.: 8:00-20:00<br />Сб.: 9:00-13:00<br />Вс.: Выходной</div>
+                </div>
+                <div class="">
+                    <h6 style="color: #DA7C77;"><span class="fas fa-file-contract mr-2"></span>ЛИЦЕНЗИЯ</h6>
+                    <div style="font-size: 0.875rem;">Лицензия ФС-99-01-009557<br />от 31.08.2018г. (бессрочно)<br /><a href="#" style="color: #023399;text-decoration: underline;"><span class="fas fa-envelope mr-1"></span>mail@msd170.ru</a></div>
+                </div>
+            </div>
+        </footer>
+        <modal v-if="showLogin" @close="showLogin = false" @login="login">
+            <h3 slot="header" name="header" style="margin: 0;" class="ml-auto">Авторизация</h3>
+        </modal>
+        <modal v-if="showModal" @close="showModal = false">
+            <div slot="body">Раздел в разработке</div>
+        </modal>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
+    <!-- development version, includes helpful console warnings -->
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script>
+        Vue.component('modal', {
+            props: ['title'],
+            template: '#modal-template'
+        })
+        var app = new Vue({
+            el: '#app',
+            data: {
+                showModal: false,
+                showLogin: false,
+                state: "menu", //menu, step1, step2
+                menuItems: [
+                    { id: 1, title: "Запись к<br />врачу-терапевту", icon: "user-md" },
+                    { id: 2, title: "Запись к врачу<br />по прикреплению", icon: "id-card" },
+                    { id: 3, title: "Запись к врачу<br />платного отделения", icon: "hand-holding-usd" },
+                    { id: 4, title: "Мой кабинет:<br />направления, талоны, записи", icon: "clinic-medical" },
+                    { id: 5, title: "Расписание<br />работы врачей", icon: "clipboard-list" },
+                    { id: 6, title: "Результаты<br />анализов", icon: "vial" }
+                ],
+                steps: [
+                    { id: 1, title: "Выбор специализации", number: "01", msg: "Выберите специальность врача" },
+                    { id: 2, title: "Выбора врача и даты", number: "02", msg: "Выберите врача и дату" },
+                    { id: 3, title: "Выбор времени приема", number: "03", msg: "33" },
+                    { id: 4, title: "Подтверждение записи", number: "04", msg: "44" }
+                ],
+                freeDates: [
+                    { id: 1, title: "14 Янв — 20 Янв" },
+                    { id: 2, title: "21 Янв — 27 Янв" },
+                    { id: 3, title: "28 Янв — 03 Фев" },
+                ],
+                specs: [
+                    { id: 101, title: "Акушер-гинеколог", time: "08:00 - 14:00", count: 8, weekId: 1 },
+                    { id: 102, title: "Акушер-гинеколог", time: "08:00 - 14:00", count: 15, weekId: 2 },
+                    { id: 103, title: "Акушер-гинеколог", time: "08:00 - 14:00", count: 10, weekId: 3 },
+                    { id: 104, title: "Аллерголог-иммунолог", time: "08:00 - 19:30", count: 15, weekId: 1 },
+                    { id: 105, title: "Аллерголог-иммунолог", time: "08:00 - 19:30", count: 20, weekId: 2 },
+                    { id: 106, title: "Аллерголог-иммунолог", time: "08:00 - 19:30", count: 33, weekId: 3 },
+                    { id: 107, title: "Гастроэнтеролог", time: "08:00 - 19:30", count: 0, weekId: 1 },
+                    { id: 108, title: "Гастроэнтеролог", time: "08:00 - 19:30", count: 16, weekId: 2 },
+                    { id: 109, title: "Гастроэнтеролог", time: "08:00 - 19:30", count: 30, weekId: 3 },
+                    { id: 1010, title: "Дерматовенеролог", time: "08:00 - 19:30", count: 5, weekId: 1 },
+                    { id: 1011, title: "Дерматовенеролог", time: "08:00 - 19:30", count: 12, weekId: 2 },
+                    { id: 1012, title: "Дерматовенеролог", time: "08:00 - 19:30", count: 31, weekId: 3 },
+                    { id: 1013, title: "Инфекционист", time: "08:00 - 19:30", count: 2, weekId: 1 },
+                    { id: 1014, title: "Инфекционист", time: "08:00 - 19:30", count: 15, weekId: 2 },
+                    { id: 1015, title: "Инфекционист", time: "08:00 - 19:30", count: 27, weekId: 3 },
+                    { id: 1016, title: "Кардиолог", time: "08:00 - 19:30", count: 8, weekId: 1 },
+                    { id: 1017, title: "Кардиолог", time: "08:00 - 19:30", count: 11, weekId: 2 },
+                    { id: 1018, title: "Кардиолог", time: "08:00 - 19:30", count: 20, weekId: 3 },
+                    { id: 1019, title: "Колопроктолог", time: "08:00 - 19:30", count: 1, weekId: 1 },
+                    { id: 1020, title: "Колопроктолог", time: "08:00 - 19:30", count: 19, weekId: 2 },
+                    { id: 1021, title: "Колопроктолог", time: "08:00 - 19:30", count: 30, weekId: 3 },
+                    { id: 1022, title: "Нарколог", time: "08:00 - 19:30", count: 15, weekId: 1 },
+                    { id: 1023, title: "Нарколог", time: "08:00 - 19:30", count: 20, weekId: 2 },
+                    { id: 1024, title: "Нарколог", time: "08:00 - 19:30", count: 31, weekId: 3 },
+                    { id: 1025, title: "Невролог", time: "08:00 - 14:00", count: 7, weekId: 3 },
+                    { id: 1026, title: "Невролог", time: "08:00 - 14:00", count: 13, weekId: 3 },
+                    { id: 1027, title: "Невролог", time: "08:00 - 14:00", count: 15, weekId: 3 },
+                    { id: 1028, title: "Онколог", time: "08:00 - 14:00", count: 7, weekId: 1 },
+                    { id: 1029, title: "Онколог", time: "08:00 - 14:00", count: 10, weekId: 2 },
+                    { id: 1030, title: "Онколог", time: "08:00 - 14:00", count: 15, weekId: 3 },
+                    { id: 1031, title: "Оториноларинголог", time: "08:00 - 19:00", count: 14, weekId: 1 },
+                    { id: 1032, title: "Оториноларинголог", time: "08:00 - 19:00", count: 22, weekId: 2 },
+                    { id: 1033, title: "Оториноларинголог", time: "08:00 - 19:00", count: 33, weekId: 3 },
+                    { id: 1034, title: "Офтальмолог", time: "08:00 - 14:00", count: 6, weekId: 1 },
+                    { id: 1035, title: "Офтальмолог", time: "08:00 - 14:00", count: 12, weekId: 2 },
+                    { id: 1036, title: "Офтальмолог", time: "08:00 - 14:00", count: 15, weekId: 3 },
+                    { id: 1037, title: "Психиатр", time: "08:00-19:30", count: 0, weekId: 1 },
+                    { id: 1038, title: "Психиатр", time: "08:00-19:30", count: 10, weekId: 2 },
+                    { id: 1039, title: "Психиатр", time: "08:00-19:30", count: 31, weekId: 3 },
+                    { id: 1040, title: "Психотерапевт", time: "08:00-19:30", count: 2, weeklId: 1 },
+                    { id: 1041, title: "Психотерапевт", time: "08:00-19:30", count: 12, weeklId: 2 },
+                    { id: 1042, title: "Психотерапевт", time: "08:00-19:30", count: 29, weeklId: 3 },
+                    { id: 1043, title: "Пульмонолог", time: "08:00-19:30", count: 33, weekId: 1 },
+                    { id: 1044, title: "Пульмонолог", time: "08:00-19:30", count: 33, weekId: 2 },
+                    { id: 1045, title: "Пульмонолог", time: "08:00-19:30", count: 33, weekId: 3 },
+                    { id: 1046, title: "Ревматолог", time: "08:00-19:30", count: 1, weekId: 1 },
+                    { id: 1047, title: "Ревматолог", time: "08:00-19:30", count: 15, weekId: 2 },
+                    { id: 1048, title: "Ревматолог", time: "08:00-19:30", count: 27, weekId: 3 },
+                    { id: 1049, title: "Рентгенолог", time: "08:00-19:30", count: 9, weekId: 1 },
+                    { id: 1050, title: "Рентгенолог", time: "08:00-19:30", count: 19, weekId: 2 },
+                    { id: 1051, title: "Рентгенолог", time: "08:00-19:30", count: 26, weekId: 3 },
+                    { id: 1052, title: "Стоматолог", time: "08:00-19:30", count: 2, weekId: 1 },
+                    { id: 1053, title: "Стоматолог", time: "08:00-19:30", count: 18, weekId: 2 },
+                    { id: 1054, title: "Стоматолог", time: "08:00-19:30", count: 32, weekId: 3 },
+                    { id: 1055, title: "Терапевт", time: "08:00-19:30", count: 3, weekId: 1 },
+                    { id: 1056, title: "Терапевт", time: "08:00-19:30", count: 13, weekId: 2 },
+                    { id: 1057, title: "Терапевт", time: "08:00-19:30", count: 31, weekId: 3 },
+                    { id: 1058, title: "Травматолог", time: "08:00-19:30", count: 3, weekId: 1 },
+                    { id: 1059, title: "Травматолог", time: "08:00-19:30", count: 7, weekId: 2 },
+                    { id: 1060, title: "Травматолог", time: "08:00-19:30", count: 19, weekId: 3 },
+                    { id: 1061, title: "Уролог", time: "08:00-19:30", count: 9, weekId: 1 },
+                    { id: 1062, title: "Уролог", time: "08:00-19:30", count: 19, weekId: 2 },
+                    { id: 1063, title: "Уролог", time: "08:00-19:30", count: 28, weekId: 3 },
+                    { id: 1064, title: "Терапевт", time: "08:00-19:30", count: 3, weekId: 1 },
+                    { id: 1065, title: "Терапевт", time: "08:00-19:30", count: 13, weekId: 2 },
+                    { id: 1066, title: "Терапевт", time: "08:00-19:30", count: 31, weekId: 3 },
+                    { id: 1067, title: "Хирург", time: "08:00-19:30", count: 5, weekId: 1 },
+                    { id: 1068, title: "Хирург", time: "08:00-19:30", count: 14, weekId: 2 },
+                    { id: 1069, title: "Хирург", time: "08:00-19:30", count: 29, weekId: 3 },
+                    { id: 1070, title: "Эндокринолог", time: "08:00-19:30", count: 6, weekId: 1 },
+                    { id: 1071, title: "Эндокринолог", time: "08:00-19:30", count: 14, weekId: 2 },
+                    { id: 1072, title: "Эндокринолог", time: "08:00-19:30", count: 33, weekId: 3 },
+                ],
+                days: [
+                    {
+                        id: 661,
+                        date: new Date(2018, 2, 18),
+                    },
+                    {
+                        id: 662,
+                        date: new Date(2018, 2, 19),
+                    },
+                    {
+                        id: 663,
+                        date: new Date(2018, 2, 20),
+                    },
+                    {
+                        id: 664,
+                        date: new Date(2018, 2, 21),
+                    },
+                    {
+                        id: 665,
+                        date: new Date(2018, 2, 22),
+                    },
+                    {
+                        id: 666,
+                        date: new Date(2018, 2, 23),
+                    }
+                ],
+                doctors: [
+                    {
+                        specIndex: 0,
+                        id: 4242,
+                        lastname: "Евмененко",
+                        firstname: "Татьяна",
+                        secondname: "Владимировна",
+                        qualify: "Врач – акушер - гинеколог высшей квалификации. Ранее возглавляла женскую консультацию МСЧ №170. Стаж работы более 40 лет.",
+                        avatar: "https://randomuser.me/api/portraits/women/52.jpg", // см. адрес картинки тут: https://randomuser.me/photos
+                        tickets:
+                            [
+                                {
+                                    id: 424242,
+                                    state: 0, // 0-талоны есть, 1-талонов нет, 2-приема нет, 3-болен
+                                    count: 9,
+                                    date: "18.03.2019",
+                                    time: "14:00 - 19:40",
+                                    periodId: 1 // 0-утро, 1-вечер, 2-весь день
+                                },
+                                {
+                                    id: 424245,
+                                    state: 1, // 0-талоны есть, 1-талонов нет, 2-приема нет, 3-болен
+                                    count: 0,
+                                    date: "21.03.2019",
+                                    time: "14:00 - 19:40",
+                                    periodId: 1 // 0-утро, 1-вечер, 2-весь день
+                                },
+                                {
+                                    id: 424246,
+                                    state: 0, // 0-талоны есть, 1-талонов нет, 2-приема нет, 3-болен
+                                    count: 8,
+                                    date: "22.03.2019",
+                                    time: "14:00 - 19:40",
+                                    periodId: 1 // 0-утро, 1-вечер, 2-весь день
+                                },
+                                {
+                                    id: 424247,
+                                    state: 0, // 0-талоны есть, 1-талонов нет, 2-приема нет, 3-болен
+                                    count: 9,
+                                    date: "23.03.2019",
+                                    time: "14:00 - 19:40",
+                                    periodId: 1 // 0-утро, 1-вечер, 2-весь день
+                                }
+                            ]
+                    },
+                    {
+                        specIndex: 0,
+                        id: 4243,
+                        lastname: "Конышева",
+                        firstname: "Татьяна",
+                        secondname: "Анатольевна",
+                        qualify: "Акушер-гинеколог с многолетним стажем. Врач первой категории",
+                        avatar: "https://randomuser.me/api/portraits/women/40.jpg", // см. адрес картинки тут: https://randomuser.me/photos
+                        tickets:
+                            [
+                                {
+                                    id: 424342,
+                                    state: 0, // 0-талоны есть, 1-талонов нет, 2-приема нет, 3-болен
+                                    count: 15,
+                                    date: "18.03.2019",
+                                    time: "08:00-13:30",
+                                    periodId: 0 // 0-утро, 1-вечер, 2-весь день
+                                },
+                                {
+                                    id: 424343,
+                                    state: 2, // 0-талоны есть, 1-талонов нет, 2-приема нет, 3-болен
+                                    count: 0,
+                                    date: "19.03.2019",
+                                    time: "08:00-13:30",
+                                    periodId: 0 // 0-утро, 1-вечер, 2-весь день
+                                },
+                                {
+                                    id: 424344,
+                                    state: 5, // 0-талоны есть, 1-талонов нет, 2-приема нет, 3-болен
+                                    count: 0,
+                                    date: "20.03.2019",
+                                    time: "08:00-13:30",
+                                    periodId: 0 // 0-утро, 1-вечер, 2-весь день
+                                },
+                                {
+                                    id: 424245,
+                                    state: 1, // 0-талоны есть, 1-талонов нет, 2-приема нет, 3-болен
+                                    count: 0,
+                                    date: "21.03.2019",
+                                    time: "08:00-13:30",
+                                    periodId: 0 // 0-утро, 1-вечер, 2-весь день
+                                },
+                                {
+                                    id: 424246,
+                                    state: 0, // 0-талоны есть, 1-талонов нет, 2-приема нет, 3-болен
+                                    count: 5,
+                                    date: "22.03.2019",
+                                    time: "08:00-13:30",
+                                    periodId: 0 // 0-утро, 1-вечер, 2-весь день
+                                },
+                                {
+                                    id: 424247,
+                                    state: 0, // 0-талоны есть, 1-талонов нет, 2-приема нет, 3-болен
+                                    count: 7,
+                                    date: "23.03.2019",
+                                    time: "08:00-13:30",
+                                    periodId: 0 // 0-утро, 1-вечер, 2-весь день
+                                }
+                            ]
+                    },
+                    {
+                        specIndex: 0,
+                        id: 4244,
+                        lastname: "Новикова",
+                        firstname: "Татьяна",
+                        secondname: "Вячеславовна",
+                        qualify: "Опытный врач. Акушер-гинеколог первой категории. Стаж 18 лет",
+                        avatar: "https://randomuser.me/api/portraits/women/53.jpg", // см. адрес картинки тут: https://randomuser.me/photos
+                        tickets:
+                            [
+                                {
+                                    id: 424442,
+                                    state: 0, // 0-талоны есть, 1-талонов нет, 2-приема нет, 3-болен
+                                    count: 15,
+                                    date: "18.03.2019",
+                                    time: "12:00-19:30",
+                                    periodId: 2 // 0-утро, 1-вечер, 2-весь день
+                                },
+                                {
+                                    id: 424443,
+                                    state: 2, // 0-талоны есть, 1-талонов нет, 2-приема нет, 3-болен
+                                    count: 0,
+                                    date: "19.03.2019",
+                                    time: "12:00-19:30",
+                                    periodId: 2 // 0-утро, 1-вечер, 2-весь день
+                                },
+                                {
+                                    id: 424444,
+                                    state: 0, // 0-талоны есть, 1-талонов нет, 2-приема нет, 3-болен
+                                    count: 5,
+                                    date: "20.03.2019",
+                                    time: "12:00-19:30",
+                                    periodId: 2 // 0-утро, 1-вечер, 2-весь день
+                                },
+                                {
+                                    id: 424445,
+                                    state: 1, // 0-талоны есть, 1-талонов нет, 2-приема нет, 3-болен
+                                    count: 0,
+                                    date: "21.03.2019",
+                                    time: "12:00-19:30",
+                                    periodId: 2 // 0-утро, 1-вечер, 2-весь день
+                                },
+                                {
+                                    id: 424446,
+                                    state: 2, // 0-талоны есть, 1-талонов нет, 2-приема нет, 3-болен
+                                    count: 0,
+                                    date: "22.03.2019",
+                                    time: "12:00-19:30",
+                                    periodId: 2 // 0-утро, 1-вечер, 2-весь день
+                                },
+                                {
+                                    id: 424447,
+                                    state: 0, // 0-талоны есть, 1-талонов нет, 2-приема нет, 3-болен
+                                    count: 7,
+                                    date: "23.03.2019",
+                                    time: "12:00-19:30",
+                                    periodId: 2 // 0-утро, 1-вечер, 2-весь день
+                                }
+                            ]
+                    },
+                    {
+                        specIndex: 1,
+                        id: 4245,
+                        lastname: "Волкова",
+                        firstname: "Ирина",
+                        secondname: "Васильевна",
+                        qualify: "Отоларинголог высшей категории. Заведующая отделением, стаж 24 года",
+                        avatar: "https://randomuser.me/api/portraits/women/6.jpg", // см. адрес картинки тут: https://randomuser.me/photos
+                        tickets:
+                            [
+                                {
+                                    id: 424542,
+                                    state: 0, // 0-талоны есть, 1-талонов нет, 2-приема нет, 3-болен
+                                    count: 10,
+                                    date: "18.03.2019",
+                                    time: "14:00-20:00",
+                                    periodId: 1 // 0-утро, 1-вечер, 2-весь день
+                                },
+                                {
+                                    id: 424543,
+                                    state: 0, // 0-талоны есть, 1-талонов нет, 2-приема нет, 3-болен
+                                    count: 12,
+                                    date: "19.03.2019",
+                                    time: "14:00-20:00",
+                                    periodId: 1 // 0-утро, 1-вечер, 2-весь день
+                                },
+                                {
+                                    id: 424544,
+                                    state: 4, // 0-талоны есть, 1-талонов нет, 2-приема нет, 3-болен
+                                    count: 0,
+                                    date: "20.03.2019",
+                                    time: "14:00-20:00",
+                                    periodId: 1 // 0-утро, 1-вечер, 2-весь день
+                                },
+                                {
+                                    id: 424545,
+                                    state: 1, // 0-талоны есть, 1-талонов нет, 2-приема нет, 3-болен
+                                    count: 0,
+                                    date: "21.03.2019",
+                                    time: "14:00-20:00",
+                                    periodId: 1 // 0-утро, 1-вечер, 2-весь день
+                                },
+                                {
+                                    id: 424546,
+                                    state: 0, // 0-талоны есть, 1-талонов нет, 2-приема нет, 3-болен
+                                    count: 8,
+                                    date: "22.03.2019",
+                                    time: "14:00-20:00",
+                                    periodId: 1 // 0-утро, 1-вечер, 2-весь день
+                                },
+                                {
+                                    id: 424547,
+                                    state: 0, // 0-талоны есть, 1-талонов нет, 2-приема нет, 3-болен
+                                    count: 9,
+                                    date: "23.03.2019",
+                                    time: "14:00-20:00",
+                                    periodId: 1 // 0-утро, 1-вечер, 2-весь день
+                                }
+                            ]
+                    },
+                    {
+                        specIndex: 1,
+                        id: 4246,
+                        lastname: "Володина",
+                        firstname: "Виктория",
+                        secondname: "Борисовна",
+                        qualify: "Врач высшей категории, кандидат медицинских наук. Стаж 24 года",
+                        avatar: "https://randomuser.me/api/portraits/women/72.jpg", // см. адрес картинки тут: https://randomuser.me/photos
+                        tickets:
+                            [
+                                {
+                                    id: 424642,
+                                    state: 0, // 0-талоны есть, 1-талонов нет, 2-приема нет, 3-болен
+                                    count: 15,
+                                    date: "18.03.2019",
+                                    time: "08:00-14:00",
+                                    periodId: 0 // 0-утро, 1-вечер, 2-весь день
+                                },
+                                {
+                                    id: 424643,
+                                    state: 2, // 0-талоны есть, 1-талонов нет, 2-приема нет, 3-болен
+                                    count: 0,
+                                    date: "19.03.2019",
+                                    time: "08:00-14:00",
+                                    periodId: 0 // 0-утро, 1-вечер, 2-весь день
+                                },
+                                {
+                                    id: 424644,
+                                    state: 1, // 0-талоны есть, 1-талонов нет, 2-приема нет, 3-болен
+                                    count: 0,
+                                    date: "20.03.2019",
+                                    time: "08:00-14:00",
+                                    periodId: 0 // 0-утро, 1-вечер, 2-весь день
+                                },
+                                {
+                                    id: 424645,
+                                    state: 1, // 0-талоны есть, 1-талонов нет, 2-приема нет, 3-болен
+                                    count: 0,
+                                    date: "21.03.2019",
+                                    time: "08:00-14:00",
+                                    periodId: 0 // 0-утро, 1-вечер, 2-весь день
+                                },
+                                {
+                                    id: 424646,
+                                    state: 0, // 0-талоны есть, 1-талонов нет, 2-приема нет, 3-болен
+                                    count: 5,
+                                    date: "22.03.2019",
+                                    time: "08:00-14:00",
+                                    periodId: 0 // 0-утро, 1-вечер, 2-весь день
+                                },
+                                {
+                                    id: 424647,
+                                    state: 0, // 0-талоны есть, 1-талонов нет, 2-приема нет, 3-болен
+                                    count: 7,
+                                    date: "23.03.2019",
+                                    time: "08:00-14:00",
+                                    periodId: 0 // 0-утро, 1-вечер, 2-весь день
+                                }
+                            ]
+                    },
+                    {
+                        specIndex: 1,
+                        id: 4247,
+                        lastname: "Костырина",
+                        firstname: "Инна",
+                        secondname: "Викторовна",
+                        qualify: "Врач первой категории, опыт работы в США, стаж 18 лет",
+                        avatar: "https://randomuser.me/api/portraits/women/79.jpg", // см. адрес картинки тут: https://randomuser.me/photos
+                        tickets:
+                            [
+                                {
+                                    id: 424742,
+                                    state: 2, // 0-талоны есть, 1-талонов нет, 2-приема нет, 3-болен
+                                    count: 0,
+                                    date: "18.03.2019",
+                                    time: "08:00-14:00",
+                                    periodId: 0 // 0-утро, 1-вечер, 2-весь день
+                                },
+                                {
+                                    id: 424743,
+                                    state: 0, // 0-талоны есть, 1-талонов нет, 2-приема нет, 3-болен
+                                    count: 5,
+                                    date: "19.03.2019",
+                                    time: "08:00-14:00",
+                                    periodId: 0 // 0-утро, 1-вечер, 2-весь день
+                                },
+                                {
+                                    id: 424744,
+                                    state: 1, // 0-талоны есть, 1-талонов нет, 2-приема нет, 3-болен
+                                    count: 0,
+                                    date: "20.03.2019",
+                                    time: "08:00-14:00",
+                                    periodId: 0 // 0-утро, 1-вечер, 2-весь день
+                                },
+                                {
+                                    id: 424745,
+                                    state: 1, // 0-талоны есть, 1-талонов нет, 2-приема нет, 3-болен
+                                    count: 0,
+                                    date: "21.03.2019",
+                                    time: "08:00-14:00",
+                                    periodId: 0 // 0-утро, 1-вечер, 2-весь день
+                                },
+                                {
+                                    id: 424746,
+                                    state: 0, // 0-талоны есть, 1-талонов нет, 2-приема нет, 3-болен
+                                    count: 6,
+                                    date: "22.03.2019",
+                                    time: "08:00-14:00",
+                                    periodId: 0 // 0-утро, 1-вечер, 2-весь день
+                                },
+                                {
+                                    id: 424747,
+                                    state: 0, // 0-талоны есть, 1-талонов нет, 2-приема нет, 3-болен
+                                    count: 6,
+                                    date: "23.03.2019",
+                                    time: "08:00-14:00",
+                                    periodId: 0 // 0-утро, 1-вечер, 2-весь день
+                                }
+                            ]
+                    },
+                    {
+                        specIndex: 2,
+                        id: 4248,
+                        lastname: "Комарова",
+                        firstname: "Елена",
+                        secondname: "Николаевна",
+                        qualify: "Врач-офтальмолог высшей категории, кандидат медицинских наук, заведующая отделением",
+                        avatar: "https://randomuser.me/api/portraits/women/0.jpg", // см. адрес картинки тут: https://randomuser.me/photos
+                        tickets:
+                            [
+                                {
+                                    id: 424842,
+                                    state: 0, // 0-талоны есть, 1-талонов нет, 2-приема нет, 3-болен
+                                    count: 11,
+                                    date: "18.03.2019",
+                                    time: "08:00-13:00",
+                                    periodId: 0 // 0-утро, 1-вечер, 2-весь день
+                                },
+                                {
+                                    id: 424843,
+                                    state: 0, // 0-талоны есть, 1-талонов нет, 2-приема нет, 3-болен
+                                    count: 12,
+                                    date: "19.03.2019",
+                                    time: "08:00-13:00",
+                                    periodId: 0 // 0-утро, 1-вечер, 2-весь день
+                                },
+                                {
+                                    id: 424844,
+                                    state: 1, // 0-талоны есть, 1-талонов нет, 2-приема нет, 3-болен
+                                    count: 0,
+                                    date: "20.03.2019",
+                                    time: "08:00-13:00",
+                                    periodId: 0 // 0-утро, 1-вечер, 2-весь день
+                                },
+                                {
+                                    id: 424845,
+                                    state: 1, // 0-талоны есть, 1-талонов нет, 2-приема нет, 3-болен
+                                    count: 0,
+                                    date: "21.03.2019",
+                                    time: "08:00-13:00",
+                                    periodId: 0 // 0-утро, 1-вечер, 2-весь день
+                                },
+                                {
+                                    id: 424846,
+                                    state: 0, // 0-талоны есть, 1-талонов нет, 2-приема нет, 3-болен
+                                    count: 12,
+                                    date: "22.03.2019",
+                                    time: "08:00-13:00",
+                                    periodId: 0 // 0-утро, 1-вечер, 2-весь день
+                                },
+                                {
+                                    id: 424847,
+                                    state: 0, // 0-талоны есть, 1-талонов нет, 2-приема нет, 3-болен
+                                    count: 6,
+                                    date: "23.03.2019",
+                                    time: "08:00-13:00",
+                                    periodId: 0 // 0-утро, 1-вечер, 2-весь день
+                                }
+                            ]
+                    },
+                    {
+                        specIndex: 2,
+                        id: 4249,
+                        lastname: "Сергушев",
+                        firstname: "Павел",
+                        secondname: "Сергеевич",
+                        qualify: "Врач-офтальмолог первой категории",
+                        avatar: "https://randomuser.me/api/portraits/men/75.jpg", // см. адрес картинки тут: https://randomuser.me/photos
+                        tickets:
+                            [
+                                {
+                                    id: 424942,
+                                    state: 0, // 0-талоны есть, 1-талонов нет, 2-приема нет, 3-болен
+                                    count: 3,
+                                    date: "18.03.2019",
+                                    time: "14:00-20:00",
+                                    periodId: 1 // 0-утро, 1-вечер, 2-весь день
+                                },
+                                {
+                                    id: 424943,
+                                    state: 2, // 0-талоны есть, 1-талонов нет, 2-приема нет, 3-болен
+                                    count: 12,
+                                    date: "19.03.2019",
+                                    time: "14:00-20:00",
+                                    periodId: 1 // 0-утро, 1-вечер, 2-весь день
+                                },
+                                {
+                                    id: 424944,
+                                    state: 1, // 0-талоны есть, 1-талонов нет, 2-приема нет, 3-болен
+                                    count: 0,
+                                    date: "20.03.2019",
+                                    time: "14:00-20:00",
+                                    periodId: 1 // 0-утро, 1-вечер, 2-весь день
+                                },
+                                {
+                                    id: 424945,
+                                    state: 1, // 0-талоны есть, 1-талонов нет, 2-приема нет, 3-болен
+                                    count: 0,
+                                    date: "21.03.2019",
+                                    time: "14:00-20:00",
+                                    periodId: 1 // 0-утро, 1-вечер, 2-весь день
+                                },
+                                {
+                                    id: 424946,
+                                    state: 0, // 0-талоны есть, 1-талонов нет, 2-приема нет, 3-болен
+                                    count: 1,
+                                    date: "22.03.2019",
+                                    time: "14:00-20:00",
+                                    periodId: 1 // 0-утро, 1-вечер, 2-весь день
+                                },
+                                {
+                                    id: 424947,
+                                    state: 0, // 0-талоны есть, 1-талонов нет, 2-приема нет, 3-болен
+                                    count: 2,
+                                    date: "23.03.2019",
+                                    time: "14:00-20:00",
+                                    periodId: 1 // 0-утро, 1-вечер, 2-весь день
+                                }
+                            ]
+                    },
+                    {
+                        specIndex: 2,
+                        id: 4250,
+                        lastname: "Сивякова",
+                        firstname: "Евгения",
+                        secondname: "Александровна",
+                        qualify: "Опытный врач-офтальмолог",
+                        avatar: "https://randomuser.me/api/portraits/women/4.jpg", // см. адрес картинки тут: https://randomuser.me/photos
+                        tickets:
+                            [
+                                {
+                                    id: 425042,
+                                    state: 2, // 0-талоны есть, 1-талонов нет, 2-приема нет, 3-болен
+                                    count: 0,
+                                    date: "18.03.2019",
+                                    time: "08:00-14:00",
+                                    periodId: 0 // 0-утро, 1-вечер, 2-весь день
+                                },
+                                {
+                                    id: 425043,
+                                    state: 2, // 0-талоны есть, 1-талонов нет, 2-приема нет, 3-болен
+                                    count: 0,
+                                    date: "19.03.2019",
+                                    time: "08:00-14:00",
+                                    periodId: 0 // 0-утро, 1-вечер, 2-весь день
+                                },
+                                {
+                                    id: 425044,
+                                    state: 1, // 0-талоны есть, 1-талонов нет, 2-приема нет, 3-болен
+                                    count: 0,
+                                    date: "20.03.2019",
+                                    time: "08:00-14:00",
+                                    periodId: 0 // 0-утро, 1-вечер, 2-весь день
+                                },
+                                {
+                                    id: 425045,
+                                    state: 1, // 0-талоны есть, 1-талонов нет, 2-приема нет, 3-болен
+                                    count: 0,
+                                    date: "21.03.2019",
+                                    time: "08:00-14:00",
+                                    periodId: 0 // 0-утро, 1-вечер, 2-весь день
+                                },
+                                {
+                                    id: 425046,
+                                    state: 0, // 0-талоны есть, 1-талонов нет, 2-приема нет, 3-болен
+                                    count: 5,
+                                    date: "22.03.2019",
+                                    time: "08:00-14:00",
+                                    periodId: 0 // 0-утро, 1-вечер, 2-весь день
+                                },
+                                {
+                                    id: 425047,
+                                    state: 0, // 0-талоны есть, 1-талонов нет, 2-приема нет, 3-болен
+                                    count: 7,
+                                    date: "23.03.2019",
+                                    time: "08:00-14:00",
+                                    periodId: 0 // 0-утро, 1-вечер, 2-весь день
+                                }
+                            ]
+                    },
+                    {
+                        specIndex: 2,
+                        id: 4251,
+                        lastname: "Степанова",
+                        firstname: "Марианна",
+                        secondname: "Владимировна",
+                        qualify: "Опытный врач-офтальмолог",
+                        avatar: "https://randomuser.me/api/portraits/women/63.jpg", // см. адрес картинки тут: https://randomuser.me/photos
+                        tickets:
+                            [
+                                {
+                                    id: 425142,
+                                    state: 2, // 0-талоны есть, 1-талонов нет, 2-приема нет, 3-болен
+                                    count: 0,
+                                    date: "18.03.2019",
+                                    time: "08:00-14:00",
+                                    periodId: 0 // 0-утро, 1-вечер, 2-весь день
+                                },
+                                {
+                                    id: 425143,
+                                    state: 2, // 0-талоны есть, 1-талонов нет, 2-приема нет, 3-болен
+                                    count: 0,
+                                    date: "19.03.2019",
+                                    time: "08:00-14:00",
+                                    periodId: 0 // 0-утро, 1-вечер, 2-весь день
+                                },
+                                {
+                                    id: 425144,
+                                    state: 1, // 0-талоны есть, 1-талонов нет, 2-приема нет, 3-болен
+                                    count: 0,
+                                    date: "20.03.2019",
+                                    time: "08:00-14:00",
+                                    periodId: 0 // 0-утро, 1-вечер, 2-весь день
+                                },
+                                {
+                                    id: 425145,
+                                    state: 1, // 0-талоны есть, 1-талонов нет, 2-приема нет, 3-болен
+                                    count: 0,
+                                    date: "21.03.2019",
+                                    time: "08:00-14:00",
+                                    periodId: 0 // 0-утро, 1-вечер, 2-весь день
+                                },
+                                {
+                                    id: 425146,
+                                    state: 1, // 0-талоны есть, 1-талонов нет, 2-приема нет, 3-болен
+                                    count: 0,
+                                    date: "22.03.2019",
+                                    time: "08:00-14:00",
+                                    periodId: 0 // 0-утро, 1-вечер, 2-весь день
+                                },
+                                {
+                                    id: 425147,
+                                    state: 1, // 0-талоны есть, 1-талонов нет, 2-приема нет, 3-болен
+                                    count: 0,
+                                    date: "23.03.2019",
+                                    time: "08:00-14:00",
+                                    periodId: 0 // 0-утро, 1-вечер, 2-весь день
+                                }
+                            ]
+                    },
+
+                ],
+                timeOut: null,
+                now: new Date(),
+                activeDateId: 1,
+                activeSpec: [],
+                activeTickets: [],
+                search: "",
+            },
+            created: function() {
+                var vm = this;
+                this.timeOut = window.setInterval(function () {
+                    vm.now = new Date();
+                }, 60 * 1000)
+                window.onbeforeunload = function () {
+                    return "Вы уверены, что хотите покинуть личный кабинет?";
+                }
+            },
+            beforeUpdate: function () {
+
+            },
+            updated: function () {
+                $('[data-toggle="tooltip"]').tooltip()
+            },
+            computed: {
+                getTime: function () {
+                    return this.get2DigitVal(this.now.getHours()) + ":" + this.get2DigitVal(this.now.getMinutes())
+                },
+                getDate: function () {
+                    return this.get2DigitVal(this.now.getDate()) + "." + this.get2DigitVal(this.now.getMonth() + 1) + "." + this.now.getFullYear()
+                }
+            },
+            watch: {
+                
+            },
+            methods: {
+                login: function () {
+                    this.showLogin = false
+                    this.gotoStep(1)
+                },
+                gotoMenu: function () {
+                    this.state = 'menu'
+                },
+                gotoStep: function (step) {
+                    this.state = 'step' + step.toString()
+                },
+                get2DigitVal: function (v) {
+                    return (v < 10 ? '0' + v : '' + v);
+                },
+                specChanged(spec) {
+                    if (spec.count > 0){
+                        if (this.activeSpec.includes(spec)) {
+                            var index = this.activeSpec.indexOf(spec);
+                            if (index > -1) {
+                                this.activeSpec.splice(index, 1);
+                            }
+                        }
+                        else if (this.activeSpec.length < 3) {
+                            this.activeSpec.push(spec)
+                        }
+                    }
+                },
+                docChanged(doc, ticket, spec) {
+                    if (ticket.state === 0){
+                        var index = -1
+                        var docFound = false
+                        for (var i = 0; i < this.activeTickets.length; i++) {
+                            if (this.activeTickets[i].docid === doc.id)
+                            {
+                                docFound = true
+                                if (this.activeTickets[i].ticketid === ticket.id) {
+                                    index = i
+                                }
+                            }
+                        }
+
+                        if (index !== -1) {
+                            this.activeTickets.splice(index, 1);
+                        }
+                        else if (this.activeTickets.length < 3 && !docFound) {
+                            this.activeTickets.push({
+                                docid: doc.id,
+                                ticketid: ticket.id,
+                                title: this.getDocTitle(doc, spec.title),
+                                specIndex: doc.specIndex
+                            })
+                        }
+                    }
+                },
+                specValid: function (spec) {
+                    return ((spec.title.toUpperCase().indexOf(this.search.toUpperCase()) !== -1) && (spec.weekId === this.activeDateId))
+                },
+                getDocTitle: function (doc, speciality) {
+                    return speciality + ' (' + doc.lastname + ' ' + doc.firstname.charAt(0) + '. ' + doc.secondname.charAt(0) + '.)';
+                },
+                getDoctorIO: function (doc) {
+                    return doc.firstname + ' ' + doc.secondname
+                },
+                isDoctorActive: function (id) {
+                    var found = false
+                    for (var i = 0; i < this.activeTickets.length; i++) {
+                        if (this.activeTickets[i].docid === id) {
+                            found = true
+                            break
+                        }
+                    }
+                    return found
+                },
+                isTicketActive: function(docid, ticketid){
+                    var found = false
+                    for (var i = 0; i < this.activeTickets.length; i++) {
+                        if (this.activeTickets[i].docid === docid && this.activeTickets[i].ticketid === ticketid) {
+                            found = true
+                            break
+                        }
+                    }
+                    return found
+                },
+                getStateBackgroundColor(ticket){
+                    if (ticket.state === 0){
+                        if (ticket.periodId === 0){
+                            return 'FAFFE2'
+                        } else if (ticket.periodId === 1) {
+                            return 'EBF7FF'
+                        } else if (ticket.periodId === 2) {
+                            return 'F6DDDC'
+                        }
+                    }
+                    else {
+                        return 'FAFDFF'
+                    }
+                },
+                getTicketMsg(state){
+                    if (state === 2) {
+                        return 'Нет<br />приема'
+                    } else if (state === 3) {
+                        return 'Болен'
+                    } else if (state === 4) {
+                        return 'Прием<br />без записи'
+                    } else if (state === 5) {
+                        return 'Отпуск'
+                    }
+                },
+                formatDate: function(date) {
+                    var monthNames = [
+                        "Янв", "Фев", "Мар",
+                        "Апр", "Май", "Июн", "Июл",
+                        "Авг", "Сен", "Окт",
+                        "Ноя", "Дек"
+                    ];
+
+                    var dayName = [
+                        "Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"
+                    ]
+
+                    var day = date.getDate();
+                    var monthIndex = date.getMonth();
+                    var dayOfWeek = date.getDay();
+
+                    return dayName[dayOfWeek] + '<br />' + this.get2DigitVal(day) + ' ' + monthNames[monthIndex];
+                },
+                validDoctor: function(doctor, index){
+                    if (doctor.specIndex !== index) return false
+                    for (var i = 0; i < this.activeTickets.length; i++) {
+                        if (this.activeTickets[i].specIndex === doctor.specIndex && this.activeTickets[i].docid !== doctor.id) {
+                            return false
+                        }
+                    }
+                    return true
+                },
+                stepClicked: function(id){
+                    if (parseInt(this.state.charAt(4)) > id){
+                        this.gotoStep(id)
+                    }
+                }
+            },
+            beforeDestroy: function () {
+                window.clearInterval(this.timeOut)
+            }
+        })
+    </script>
+    <!-- template for the modal component -->
+    <script type="text/x-template" id="modal-template">
+        <transition name="modal">
+        <div class="modal-mask">
+            <div class="modal-wrapper">
+            <div class="modal-container">
+    
+                <div class="modal-header align-items-center justify-content-center">
+                    <slot name="header">
+                        Ошибка
+                    </slot>
+                    <button class="modal-default-button btn ml-auto" @click="$emit('close')"><span class="fas fa-times-circle" style="font-size: 1.625rem;"></span></button>
+                </div>
+    
+                <div class="modal-body d-flex justify-content-center" style="font-size:1.25rem;">
+                    <slot name="body">
+                        <form v-on:submit.prevent="$emit('login')" class="">
+                            <div class="form-group" style="margin-bottom: 2.375rem;">
+                                <label for="userId">Номер пропуска, полис ДМС или номер направления</label>
+                                <input name="userId" placeholder="11222333" class="form-control form-control-lg" />
+                            </div>
+                            <div class="form-group">
+                                <label for="userId">Дата рождения</label>
+                                <div class="input-group text-center">
+                                    <input name="birthDay" placeholder="День"  class="form-control form-control-lg text-center" />
+                                    <input name="birthMonth" placeholder="Месяц" class="form-control form-control-lg text-center" />
+                                    <input name="birthYear" placeholder="Год" class="form-control form-control-lg text-center" />
+                                </div>
+                            </div>
+                            <div class="d-flex justify-content-center mt-5">
+                                <button type="submit" class="btn btn-primary btn-lg px-5 rounded-pill" style="min-width: 15.9375rem;">Войти</button>
+                            </div>
+                        </form>
+                    </slot>
+                </div>
+
+            </div>
+            </div>
+        </div>
+        </transition>
+    </script>
+  </body>
+</html>

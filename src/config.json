@@ -1,0 +1,51 @@
+{
+    "staticConfig": {
+        "footerHTML": "<div class='container d-flex justify-content-between align-items-center' style='height: 12rem;'><img style = 'height: 4.5rem;' src = 'style/logo.png' /><div class=''><h6><img src='style/map-marker-alt-solid.svg' class='mr-2 mb-1' height='16'>ГДЕ МЫ НАХОДИМСЯ</h6><div style='font-size: 0.875rem;'>141070, МО,<br />г. Королёв, ул. Ленина, д. 2<br /><a href='http://msd170.ru/' style='color: #1B6CF3;text-decoration: underline;'>www.msd170.ru</a></div></div><div class=''><h6><img src='style/clock-solid.svg' class='mr-2 mb-1' height='16'>КАК МЫ РАБОТАЕМ</h6><div style='font-size: 0.875rem;'>Пн-Пт.: 8:00-20:00<br />Сб.: 9:00-13:00<br />Вс.: Выходной</div></div><div class=''><h6><img src='style/file-contract-solid.svg' class='mr-2 mb-1' height='16'>ЛИЦЕНЗИЯ</h6><div style='font-size: 0.875rem;'>Лицензия ФС-99-01-009557<br />от 31.08.2018г. (бессрочно)<br /><a href='mailto:mail@msd170.ru' style='color: #1B6CF3;text-decoration: underline;'><img src='style/envelope-solid.svg' class='mr-1' height='14'></span>mail@msd170.ru</a></div></div></div>",
+        "headerHTML1": "<img style='height: 2.875rem;' src='style/logo.png' />",
+        "headerHTML2" : "<div class='border-bottom' style='color: #D46660;'><span>Отменить запись:</span><span class='float-right ml-3'>8 (495) 516-54-88</span></div><div class=''><span>Записаться на прием:</span><span class='float-right ml-3'>8 (495) 516-54-88</span></div>",
+        "headerHTML3": "<div class='border-bottom'><span>Единая справочная:</span><span class='float-right ml-3'>8 (495) 516-54-88</span></div><div class=''><span>Экстренный вызов скорой:</span><span class='float-right ml-3'>8 (495) 516-54-88</span></div>",
+        "menuItems": [
+            { 
+                "id": 1,
+                "type": "applink",
+                "path": "appointToTherapist",
+                "title": "Запись к<br />врачу-терапевту",
+                "icon": "user-md-solid"
+            },
+            { 
+                "id": 2,
+                "type": "applink",
+                "path": "appoint",
+                "title": "Запись к врачу<br />по прикреплению",
+                "icon": "id-card-solid"
+            },
+            { 
+                "id": 3,
+                "type": "urlNewTab",
+                "path": "test.html",
+                "title": "Запись к врачу<br />платного отделения",
+                "icon": "hand-holding-usd-solid"
+            },
+            { 
+                "id": 4,
+                "type": "urlNewTab",
+                "path": "http://msd170.ru/",
+                "title": "Мой кабинет:<br />направления, талоны, записи",
+                "icon": "clinic-medical-solid"
+            },
+            { 
+                "id": 5,
+                "type": "url",
+                "path": "style/avatarf.jpg",
+                "title": "Расписание<br />работы врачей",
+                "icon": "clipboard-list-solid"
+            },
+            { 
+                "id": 6,
+                "type": "blocked",
+                "title": "Результаты<br />анализов",
+                "icon": "vial-solid"
+            }
+        ]
+    }
+}

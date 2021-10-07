@@ -1,0 +1,55 @@
+<!-- index.html -->
+<!doctype html>
+<html lang="ru">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Электронная регистратура</title>
+    <link rel="stylesheet" href="style/bootstrap.min.css">
+    <!-- <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/solid.css"
+        integrity="sha384-r/k8YTFqmlOaqRkZuSiE9trsrDXkh07mRaoGBMoDcmA58OHILZPsk29i2BsFng1B" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/fontawesome.css"
+        integrity="sha384-4aon80D8rXCGx9ayDt85LbyUHeMWd3UiBaWliBlJ53yzm9hqN21A+o1pqoyK04h+" crossorigin="anonymous"> -->
+    <script>
+      var browserSupported = {
+        "Opera": 1,
+        "Chrome": 1,
+        "IE": 11,
+        "Firefox": 1,
+        "Safari": 1,
+        "Edge": 1
+      }
+      var getBrowserSpecs = function () {
+        var ua = navigator.userAgent, tem,
+          M = ua.match(/(opera|chrome|safari|firefox|msie|trident(?=\/))\/?\s*(\d+)/i) || []
+        if (/trident/i.test(M[1])) {
+          tem = /\brv[ :]+(\d+)/g.exec(ua) || []
+          return { name: 'IE', version: (tem[1] || '') }
+        }
+        if (M[1] === 'Chrome') {
+          tem = ua.match(/\b(OPR|Edge)\/(\d+)/)
+          if (tem != null) return { name: tem[1].replace('OPR', 'Opera'), version: tem[2] }
+        }
+        M = M[2] ? [M[1], M[2]] : [navigator.appName, navigator.appVersion, '-?']
+        if ((tem = ua.match(/version\/(\d+)/i)) != null)
+          M.splice(1, 1, tem[1])
+        return { name: M[0], version: M[1] }
+      }
+      var browserSpecs = getBrowserSpecs()
+      if (browserSupported[browserSpecs.name] === undefined || browserSpecs.name === undefined || browserSpecs.version === undefined || browserSupported[browserSpecs.name] > browserSpecs.version)
+      //if (browserSpecs.name === "Chrome")
+      {
+        window.location = "./browser-not-suppported.html"
+        //document.getElementById("app").remove()
+      }
+    </script>
+  </head>
+  
+  <body>
+    <div id="app"></div>
+    <script src="main.js"></script>
+  </body>
+</html>
