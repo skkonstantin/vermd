@@ -128,6 +128,7 @@ export default {
         }
     },
     created: function () {
+
         window.localStorage.clear()
         Object.keys(this.$data).forEach(key => {
             if (window.sessionStorage.getItem(key) !== null && key !== 'timerTimeOut') {
@@ -165,7 +166,7 @@ export default {
         }
 
         //load config
-        var url = 'config.json'
+        var url = process.env.NODE_ENV === 'development' ? '/api/config.json' : 'config.json'
         axios
             .post(url)
             .then(function (response) {
@@ -453,7 +454,8 @@ export default {
             this.gotoMenu()
         },
         apiCall: function (cmd, callBack, paramsCB = {}, cc = null) {
-            var url = this.apiUrl + '?cmd=' + cmd
+            var url = process.env.NODE_ENV === 'development' ? '/api/' + this.apiUrl + '?cmd=' + cmd : this.apiUrl + '?cmd=' + cmd;
+
             var vm = this
             axios
                 .post(url)

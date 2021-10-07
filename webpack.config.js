@@ -1,8 +1,10 @@
 // webpack.config.js
 const path = require('path')
 const VueLoaderPlugin = require('vue-loader/lib/plugin')
+const webpack = require('webpack');
 
-module.exports = {
+
+const config = {
     mode: 'development',
     entry: './src/index.js',
     output: {
@@ -59,6 +61,19 @@ module.exports = {
     // },
     plugins: [
         // make sure to include the plugin!
-        new VueLoaderPlugin()
+        new VueLoaderPlugin(),
+       // new webpack.EnvironmentPlugin(['NODE_ENV']),
+        new webpack.DefinePlugin({
+            'NODE_ENV': JSON.stringify(process.env.NODE_ENV)
+          })
     ]
 }
+
+module.exports = (env, argv) => {
+    if (argv.mode === 'development') {
+      config.devtool = 'source-map';
+    }
+    
+    return config;
+  };
+  
